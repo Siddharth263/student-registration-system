@@ -1,47 +1,38 @@
 package com.example.registrationSystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Data;
+
+import java.util.Set;
 
 @Entity
+@Data
 @Table(name = "instructor")
 public class Instructor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  int instructor_id;
+    private Integer instructor_id;
+
+    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be blank")
+    @NotEmpty(message = "Name cannot be empty")
     private String name;
-    private String status;
-    private int assigned_batches;
 
-    public int getInstructor_id() {
-        return instructor_id;
-    }
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
 
-    public void setInstructor_id(int instructor_id) {
-        this.instructor_id = instructor_id;
-    }
+    @PositiveOrZero
+    private Integer assigned_batches = 0;
 
-    public String getName() {
-        return name;
-    }
+    @ManyToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
+    private Batch batch;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getAssigned_batches() {
-        return assigned_batches;
-    }
-
-    public void setAssigned_batches(int assigned_batches) {
-        this.assigned_batches = assigned_batches;
-    }
+    @OneToMany(mappedBy = "instructor")
+    @JoinColumn(name = "courses_courseId")
+    private Set<Courses> course;
 }

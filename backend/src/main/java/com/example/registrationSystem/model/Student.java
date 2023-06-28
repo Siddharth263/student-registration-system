@@ -1,73 +1,45 @@
 package com.example.registrationSystem.model;
 
+import com.example.registrationSystem.customAnnotations.Password;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "student")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int student_id;
+    private Integer student_id;
+
+    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be blank")
+    @NotEmpty(message = "Name cannot be empty")
     private String name;
+
+    @Email
     private String email;
+
+    @Password
     private String password;
+
+    @NotNull(message = "Address cannot be null")
+    @NotBlank(message = "Address cannot be blank")
+    @NotEmpty(message = "Address cannot be empty")
     private String address;
-    private int admission_fee;
-    private int batch_enrolled;
 
-    public int getStudent_id() {
-        return student_id;
-    }
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
 
-    public void setStudent_id(int student_id) {
-        this.student_id = student_id;
-    }
+    @Positive
+    private Integer admission_fee;
 
-    public String getName() {
-        return name;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "courses_id")
+    private Courses course;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getAdmission_fee() {
-        return admission_fee;
-    }
-
-    public void setAdmission_fee(int admission_fee) {
-        this.admission_fee = admission_fee;
-    }
-
-    public int getBatch_enrolled() {
-        return batch_enrolled;
-    }
-
-    public void setBatch_enrolled(int batch_enrolled) {
-        this.batch_enrolled = batch_enrolled;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "batch_batchId")
+    private Batch batch;
 }

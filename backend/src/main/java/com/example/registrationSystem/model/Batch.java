@@ -1,56 +1,32 @@
 package com.example.registrationSystem.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Data;
+
+import java.util.Set;
 
 @Entity
+@Data
 @Table(name = "batch")
 public class Batch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int batch_id;
-    private int course_id;
-    private int seat_available;
-    private int max_seat;
-    private int instructor_id;
+    private Integer batchId;
 
-    public int getBatch_id() {
-        return batch_id;
-    }
+    @PositiveOrZero(message = "Either the count of students can be 0 or any positive number")
+    private Integer studentsCount;
 
-    public void setBatch_id(int batch_id) {
-        this.batch_id = batch_id;
-    }
+    @Enumerated(EnumType.STRING)
+    private BatchStatus status = BatchStatus.ACTIVE;
 
-    public int getCourse_id() {
-        return course_id;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    private Courses course;
 
-    public void setCourse_id(int course_id) {
-        this.course_id = course_id;
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Instructor instructor;
 
-    public int getSeat_available() {
-        return seat_available;
-    }
-
-    public void setSeat_available(int seat_available) {
-        this.seat_available = seat_available;
-    }
-
-    public int getMax_seat() {
-        return max_seat;
-    }
-
-    public void setMax_seat(int max_seat) {
-        this.max_seat = max_seat;
-    }
-
-    public int getInstructor_id() {
-        return instructor_id;
-    }
-
-    public void setInstructor_id(int instructor_id) {
-        this.instructor_id = instructor_id;
-    }
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL)
+    private Set<Student> students;
 }
